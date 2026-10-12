@@ -1,0 +1,28 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: fideinexus-jenkins-demo
+  
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password: 
+  
+  h2:
+    console:
+      enabled: true
+
+logging:
+  level:
+    vallegrande.edu.pe: DEBUG
+    org.springframework.web: INFO
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
