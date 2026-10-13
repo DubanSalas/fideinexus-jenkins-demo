@@ -49,8 +49,13 @@ pipeline {
         }
         
         stage('SonarQube Analysis') {
+            environment {
+                JAVA_HOME_BACKUP = "${env.JAVA_HOME}"
+                JAVA_HOME = 'D:\\Program Files\\Java\\jdk-21'
+                PATH = "D:\\Program Files\\Java\\jdk-21\\bin;${env.MAVEN_HOME}\\bin;${env.PATH}"
+            }
             steps {
-                echo '🔍 Running SonarQube analysis...'
+                echo '🔍 Running SonarQube analysis with Java 21...'
                 bat """
                     mvn sonar:sonar ^
                     -Dsonar.token=%SONAR_TOKEN% ^
