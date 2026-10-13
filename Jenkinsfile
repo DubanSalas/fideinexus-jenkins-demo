@@ -121,7 +121,7 @@ pipeline {
                 color: 'good',
                 message: """
                     *BUILD SUCCESS*
-                    Project: ${PROJECT_NAME}
+                    Project: FideiNexus Jenkins Demo
                     Build: #${BUILD_NUMBER}
                     Status: SUCCESS
                     Duration: ${currentBuild.durationString}
@@ -146,7 +146,7 @@ pipeline {
                 color: 'danger',
                 message: """
                     *BUILD FAILED*
-                    Project: ${PROJECT_NAME}
+                    Project: FideiNexus Jenkins Demo
                     Build: #${BUILD_NUMBER}
                     Status: FAILURE
                     Duration: ${currentBuild.durationString}
@@ -164,7 +164,7 @@ pipeline {
                 color: 'warning',
                 message: """
                     *BUILD UNSTABLE*
-                    Project: ${PROJECT_NAME}
+                    Project: FideiNexus Jenkins Demo
                     Build: #${BUILD_NUMBER}
                     Status: UNSTABLE
                     
