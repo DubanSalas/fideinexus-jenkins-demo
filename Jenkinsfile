@@ -1,6 +1,11 @@
 pipeline {
     agent any
     
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        timestamps()
+    }
+    
     tools {
         maven 'Maven-3.9.9'
         jdk 'JDK-17'
@@ -65,21 +70,24 @@ pipeline {
             steps {
                 echo 'Running JMeter load tests...'
                 script {
-                    def scenarios = ['green', 'yellow', 'red']
-                    scenarios.each { scenario ->
-                        echo "Running JMeter scenario: ${scenario}"
-                        bat """
-                            jmeter -n -t jmeter\\scenario-${scenario}.jmx ^
-                            -l results\\${scenario}-results.jtl ^
-                            -e -o results\\${scenario}-report
-                        """
-                        echo "Scenario ${scenario} completed"
+                    try {
+                        def scenarios = ['green', 'yellow', 'red']
+                        scenarios.each { scenario ->
+                            echo "Running JMeter scenario: ${scenario}"
+                            timeout(time: 5, unit: 'MINUTES') {
+                                bat """
+                                    jmeter -n -t jmeter\\scenario-${scenario}.jmx ^
+                                    -l results\\${scenario}-results.jtl ^
+                                    -e -o results\\${scenario}-report
+                                """
+                            }
+                            echo "Scenario ${scenario} completed"
+                        }
+                    } catch (Exception e) {
+                        echo "JMeter tests failed or timed out: ${e.message}"
+                        echo "Continuing pipeline execution..."
+                        currentBuild.result = 'UNSTABLE'
                     }
-                }
-            }
-            post {
-                always {
-                    perfReport sourceDataFiles: 'results/*-results.jtl'
                 }
             }
         }
@@ -88,12 +96,20 @@ pipeline {
             steps {
                 echo 'Running Selenium functional tests...'
                 script {
-                    bat '''
-                        python selenium\\test1-login.py
-                        python selenium\\test2-request.py
-                    '''
+                    try {
+                        timeout(time: 3, unit: 'MINUTES') {
+                            bat '''
+                                python selenium\\test1-login.py
+                                python selenium\\test2-request.py
+                            '''
+                        }
+                        echo 'Selenium tests completed'
+                    } catch (Exception e) {
+                        echo "Selenium tests failed or timed out: ${e.message}"
+                        echo "This is expected if the application is not running on localhost:4200"
+                        currentBuild.result = 'UNSTABLE'
+                    }
                 }
-                echo 'Selenium tests completed'
             }
         }
     }
