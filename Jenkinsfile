@@ -7,6 +7,8 @@ pipeline {
         PATH = "${env.MAVEN_HOME}\\bin;${env.JAVA_HOME}\\bin;${env.PATH}"
         PROJECT_NAME = 'FideiNexus Jenkins Demo'
         SONAR_TOKEN = '436e29401a649bcfcc100950e2a031bf16160e03'
+        SLACK_TOKEN = '3cJHvdlprm5WNqhpuffov4zh'
+        SLACK_CHANNEL = '#nuevo-canal'
     }
     
     stages {
@@ -72,11 +74,37 @@ pipeline {
             echo '✅ Pipeline completed successfully!'
             echo "Project: ${PROJECT_NAME}"
             echo "Build: #${BUILD_NUMBER}"
+            
+            script {
+                try {
+                    slackSend(
+                        color: 'good',
+                        message: "✅ *BUILD SUCCESS*\nProject: ${PROJECT_NAME}\nBuild: #${BUILD_NUMBER}\nStatus: SUCCESS",
+                        channel: "${SLACK_CHANNEL}",
+                        tokenCredentialId: 'slack-token'
+                    )
+                } catch (Exception e) {
+                    echo "Slack notification failed: ${e.message}"
+                }
+            }
         }
         
         failure {
             echo '❌ Pipeline failed!'
             echo "Check console output for details"
+            
+            script {
+                try {
+                    slackSend(
+                        color: 'danger',
+                        message: "❌ *BUILD FAILED*\nProject: ${PROJECT_NAME}\nBuild: #${BUILD_NUMBER}\nStatus: FAILURE",
+                        channel: "${SLACK_CHANNEL}",
+                        tokenCredentialId: 'slack-token'
+                    )
+                } catch (Exception e) {
+                    echo "Slack notification failed: ${e.message}"
+                }
+            }
         }
         
         always {
