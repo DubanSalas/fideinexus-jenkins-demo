@@ -13,7 +13,7 @@ pipeline {
     
     environment {
         PROJECT_NAME = 'FideiNexus Jenkins Demo'
-        SONAR_TOKEN = credentials('SonarCloud Token')
+        SONAR_TOKEN = credentials('sonarcloud-token')
         JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
         PATH = "${JAVA_HOME}\\bin;C:\\apache-maven-3.9.9\\bin;${env.PATH}"
     }
