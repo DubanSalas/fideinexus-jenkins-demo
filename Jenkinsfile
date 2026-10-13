@@ -6,6 +6,7 @@ pipeline {
         MAVEN_HOME = 'C:\\apache-maven-3.9.9'
         PATH = "${env.MAVEN_HOME}\\bin;${env.JAVA_HOME}\\bin;${env.PATH}"
         PROJECT_NAME = 'FideiNexus Jenkins Demo'
+        SONAR_TOKEN = '436e29401a649bcfcc100950e2a031bf16160e03'
     }
     
     stages {
@@ -44,6 +45,19 @@ pipeline {
             steps {
                 echo '📦 Packaging application...'
                 bat 'mvn package -DskipTests'
+            }
+        }
+        
+        stage('SonarQube Analysis') {
+            steps {
+                echo '🔍 Running SonarQube analysis...'
+                bat """
+                    mvn sonar:sonar ^
+                    -Dsonar.token=%SONAR_TOKEN% ^
+                    -Dsonar.host.url=https://sonarcloud.io ^
+                    -Dsonar.organization=dubansalas ^
+                    -Dsonar.projectKey=DubanSalas_fideinexus-jenkins-demo
+                """
             }
         }
     }
