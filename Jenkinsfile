@@ -1,12 +1,10 @@
 pipeline {
     agent any
     
-    tools {
-        maven 'Maven'
-        jdk 'JDK-17'
-    }
-    
     environment {
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
+        MAVEN_HOME = 'C:\\apache-maven-3.9.9'
+        PATH = "${env.MAVEN_HOME}\\bin;${env.JAVA_HOME}\\bin;${env.PATH}"
         PROJECT_NAME = 'FideiNexus Jenkins Demo'
     }
     
