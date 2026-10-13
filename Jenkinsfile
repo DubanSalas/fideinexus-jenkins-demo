@@ -14,28 +14,28 @@ pipeline {
     }
     
     stages {
-        stage('📥 Checkout') {
+        stage('Checkout') {
             steps {
-                echo '📥 Cloning repository from GitHub...'
+                echo 'Cloning repository from GitHub...'
                 git branch: 'main',
                     url: 'https://github.com/DubanSalas/fideinexus-jenkins-demo.git'
-                echo '✅ Repository cloned successfully'
+                echo 'Repository cloned successfully'
             }
         }
         
-        stage('🔨 Build') {
+        stage('Build') {
             steps {
-                echo '🔨 Building project with Maven...'
+                echo 'Building project with Maven...'
                 bat 'mvn clean compile'
-                echo '✅ Build completed successfully'
+                echo 'Build completed successfully'
             }
         }
         
-        stage('🧪 Unit Tests') {
+        stage('Unit Tests') {
             steps {
-                echo '🧪 Running unit tests...'
+                echo 'Running unit tests...'
                 bat 'mvn test'
-                echo '✅ Tests completed'
+                echo 'Tests completed'
             }
             post {
                 always {
@@ -45,9 +45,9 @@ pipeline {
             }
         }
         
-        stage('📊 SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
-                echo '📊 Running SonarQube analysis...'
+                echo 'Running SonarQube analysis...'
                 withSonarQubeEnv('SonarCloud') {
                     bat """
                         mvn sonar:sonar ^
@@ -57,13 +57,13 @@ pipeline {
                         -Dsonar.token=${SONAR_TOKEN}
                     """
                 }
-                echo '✅ SonarQube analysis completed'
+                echo 'SonarQube analysis completed'
             }
         }
         
-        stage('⚡ JMeter Load Tests') {
+        stage('JMeter Load Tests') {
             steps {
-                echo '⚡ Running JMeter load tests...'
+                echo 'Running JMeter load tests...'
                 script {
                     def scenarios = ['green', 'yellow', 'red']
                     scenarios.each { scenario ->
@@ -73,7 +73,7 @@ pipeline {
                             -l results\\${scenario}-results.jtl ^
                             -e -o results\\${scenario}-report
                         """
-                        echo "✅ Scenario ${scenario} completed"
+                        echo "Scenario ${scenario} completed"
                     }
                 }
             }
@@ -84,37 +84,37 @@ pipeline {
             }
         }
         
-        stage('🌐 Selenium Functional Tests') {
+        stage('Selenium Functional Tests') {
             steps {
-                echo '🌐 Running Selenium functional tests...'
+                echo 'Running Selenium functional tests...'
                 script {
                     bat '''
                         python selenium\\test1-login.py
                         python selenium\\test2-request.py
                     '''
                 }
-                echo '✅ Selenium tests completed'
+                echo 'Selenium tests completed'
             }
         }
     }
     
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
+            echo 'Pipeline completed successfully!'
             slackSend(
                 color: 'good',
                 message: """
-                    ✅ *BUILD SUCCESS*
+                    *BUILD SUCCESS*
                     Project: ${PROJECT_NAME}
                     Build: #${BUILD_NUMBER}
                     Status: SUCCESS
                     Duration: ${currentBuild.durationString}
                     
-                    ✓ Build completed
-                    ✓ Tests passed
-                    ✓ SonarQube analysis done
-                    ✓ JMeter tests executed
-                    ✓ Selenium tests passed
+                    - Build completed
+                    - Tests passed
+                    - SonarQube analysis done
+                    - JMeter tests executed
+                    - Selenium tests passed
                     
                     <${BUILD_URL}|View Build>
                 """,
@@ -125,11 +125,11 @@ pipeline {
         }
         
         failure {
-            echo '❌ Pipeline failed!'
+            echo 'Pipeline failed!'
             slackSend(
                 color: 'danger',
                 message: """
-                    ❌ *BUILD FAILED*
+                    *BUILD FAILED*
                     Project: ${PROJECT_NAME}
                     Build: #${BUILD_NUMBER}
                     Status: FAILURE
@@ -147,7 +147,7 @@ pipeline {
             slackSend(
                 color: 'warning',
                 message: """
-                    ⚠️ *BUILD UNSTABLE*
+                    *BUILD UNSTABLE*
                     Project: ${PROJECT_NAME}
                     Build: #${BUILD_NUMBER}
                     Status: UNSTABLE

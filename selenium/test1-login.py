@@ -33,16 +33,16 @@ def test_login():
     driver = webdriver.Chrome(options=chrome_options)
     
     try:
-        print("🌐 Test 1: Login en FideiNexus")
+        print("Test 1: Login en FideiNexus")
         print("=" * 50)
         
         # PASO 1: Navegar a la página de login
-        print("📍 Paso 1: Navegando a página de login...")
+        print("Paso 1: Navegando a página de login...")
         driver.get("http://localhost:4200/login")
         time.sleep(2)
         
         # PASO 2: Ingresar credenciales
-        print("🔑 Paso 2: Ingresando credenciales...")
+        print("Paso 2: Ingresando credenciales...")
         email_field = driver.find_element(By.ID, "email")
         password_field = driver.find_element(By.ID, "password")
         
@@ -51,12 +51,12 @@ def test_login():
         time.sleep(1)
         
         # PASO 3: Click en botón de login
-        print("👆 Paso 3: Haciendo click en 'Iniciar Sesión'...")
+        print("Paso 3: Haciendo click en 'Iniciar Sesión'...")
         login_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
         login_button.click()
         
         # PASO 4: Verificar redirección al dashboard
-        print("✅ Paso 4: Verificando redirección al dashboard...")
+        print("Paso 4: Verificando redirección al dashboard...")
         WebDriverWait(driver, 10).until(
             EC.url_contains("/dashboard")
         )
@@ -65,14 +65,14 @@ def test_login():
         assert "/dashboard" in current_url, f"Error: URL actual es {current_url}"
         
         print("=" * 50)
-        print("✅ TEST PASSED: Login exitoso")
-        print(f"📊 Resultado: Usuario redirigido a {current_url}")
+        print("TEST PASSED: Login exitoso")
+        print(f"Resultado: Usuario redirigido a {current_url}")
         
         return True
         
     except Exception as e:
         print("=" * 50)
-        print(f"❌ TEST FAILED: {str(e)}")
+        print(f"TEST FAILED: {str(e)}")
         driver.save_screenshot("test1-login-error.png")
         return False
         

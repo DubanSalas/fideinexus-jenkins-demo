@@ -36,11 +36,11 @@ def test_create_request():
     driver = webdriver.Chrome(options=chrome_options)
     
     try:
-        print("🌐 Test 2: Crear Solicitud Sacramental")
+        print("Test 2: Crear Solicitud Sacramental")
         print("=" * 50)
         
         # PASO 1: Login
-        print("🔑 Paso 1: Realizando login...")
+        print("Paso 1: Realizando login...")
         driver.get("http://localhost:4200/login")
         time.sleep(2)
         
@@ -54,12 +54,12 @@ def test_create_request():
         time.sleep(3)
         
         # PASO 2: Navegar a Solicitudes
-        print("📋 Paso 2: Navegando a sección Solicitudes...")
+        print("Paso 2: Navegando a sección Solicitudes...")
         driver.get("http://localhost:4200/solicitudes")
         time.sleep(2)
         
         # PASO 3: Click en "Nueva Solicitud"
-        print("➕ Paso 3: Haciendo click en 'Nueva Solicitud'...")
+        print("Paso 3: Haciendo click en 'Nueva Solicitud'...")
         new_request_btn = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button.btn-new-request"))
         )
@@ -67,7 +67,7 @@ def test_create_request():
         time.sleep(2)
         
         # PASO 4: Llenar formulario
-        print("📝 Paso 4: Llenando formulario de solicitud...")
+        print("Paso 4: Llenando formulario de solicitud...")
         
         # Seleccionar sacramento
         sacrament_select = Select(driver.find_element(By.ID, "sacrament"))
@@ -90,12 +90,12 @@ def test_create_request():
         time.sleep(1)
         
         # PASO 5: Enviar formulario
-        print("📤 Paso 5: Enviando formulario...")
+        print("Paso 5: Enviando formulario...")
         submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
         submit_button.click()
         
         # PASO 6: Verificar mensaje de éxito
-        print("✅ Paso 6: Verificando mensaje de éxito...")
+        print("Paso 6: Verificando mensaje de éxito...")
         success_message = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".alert-success"))
         )
@@ -104,14 +104,14 @@ def test_create_request():
             f"Error: Mensaje inesperado - {success_message.text}"
         
         print("=" * 50)
-        print("✅ TEST PASSED: Solicitud creada exitosamente")
-        print(f"📊 Resultado: {success_message.text}")
+        print("TEST PASSED: Solicitud creada exitosamente")
+        print(f"Resultado: {success_message.text}")
         
         return True
         
     except Exception as e:
         print("=" * 50)
-        print(f"❌ TEST FAILED: {str(e)}")
+        print(f"TEST FAILED: {str(e)}")
         driver.save_screenshot("test2-request-error.png")
         return False
         

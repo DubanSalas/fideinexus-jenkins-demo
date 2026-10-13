@@ -1,4 +1,4 @@
-# 🚀 FideiNexus Jenkins CI/CD Demo
+# FideiNexus Jenkins CI/CD Demo
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)]()
@@ -11,36 +11,36 @@ Proyecto de demostración para implementación de pipeline automatizado en Jenki
 
 ---
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
-- [Descripción del Proyecto](#-descripción-del-proyecto)
-- [Características](#-características)
-- [Tecnologías Utilizadas](#-tecnologías-utilizadas)
-- [Arquitectura](#-arquitectura)
-- [Instalación](#-instalación)
-- [Pipeline Jenkins](#-pipeline-jenkins)
-- [Pruebas](#-pruebas)
-- [Integraciones](#-integraciones)
-- [Autores](#-autores)
+- [Descripción del Proyecto](#descripción-del-proyecto)
+- [Características](#características)
+- [Tecnologías Utilizadas](#tecnologías-utilizadas)
+- [Arquitectura](#arquitectura)
+- [Instalación](#instalación)
+- [Pipeline Jenkins](#pipeline-jenkins)
+- [Pruebas](#pruebas)
+- [Integraciones](#integraciones)
+- [Autores](#autores)
 
 ---
 
-## 📖 Descripción del Proyecto
+## Descripción del Proyecto
 
 FideiNexus es un sistema de gestión sacramental parroquial que permite administrar solicitudes de sacramentos (Bautismo, Confirmación, Matrimonio) de manera digital. Este repositorio contiene una versión simplificada del microservicio de solicitudes, diseñada específicamente para demostrar la implementación de un pipeline CI/CD completo.
 
 ### Objetivo
 
 Implementar un pipeline automatizado en Jenkins que:
-- ✅ Compile y pruebe la aplicación
-- ✅ Realice análisis de calidad del código con SonarQube
-- ✅ Execute pruebas funcionales con Selenium
-- ✅ Execute pruebas de carga con JMeter
-- ✅ Notifique resultados mediante Slack
+- Compile y pruebe la aplicación
+- Realice análisis de calidad del código con SonarQube
+- Execute pruebas funcionales con Selenium
+- Execute pruebas de carga con JMeter
+- Notifique resultados mediante Slack
 
 ---
 
-## ✨ Características
+## Características
 
 - **API REST Reactiva**: Endpoints HTTP con Spring WebFlux
 - **Arquitectura Hexagonal**: Separación clara de responsabilidades
@@ -52,7 +52,7 @@ Implementar un pipeline automatizado en Jenkins que:
 
 ---
 
-## 🛠 Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 ### Backend
 - **Java 17**
@@ -77,7 +77,7 @@ Implementar un pipeline automatizado en Jenkins que:
 
 ---
 
-## 🏗 Arquitectura
+## Arquitectura
 
 ```
 fideinexus-jenkins-demo/
@@ -111,25 +111,25 @@ fideinexus-jenkins-demo/
 ### Arquitectura Hexagonal
 
 ```
-┌─────────────────────────────────────────────────┐
-│              Adaptadores de Entrada             │
-│          (RequestController - REST API)         │
-└────────────────┬────────────────────────────────┘
-                 │
-┌────────────────▼────────────────────────────────┐
-│                 Núcleo de Dominio               │
-│          (Request, RequestRepository)           │
-└────────────────┬────────────────────────────────┘
-                 │
-┌────────────────▼────────────────────────────────┐
-│              Adaptadores de Salida              │
-│         (R2DBC Repository - PostgreSQL)         │
-└─────────────────────────────────────────────────┘
++--------------------------------------------------+
+|             Adaptadores de Entrada               |
+|         (RequestController - REST API)           |
++------------------------+-------------------------+
+                         |
++------------------------v-------------------------+
+|                Núcleo de Dominio                 |
+|         (Request, RequestRepository)             |
++------------------------+-------------------------+
+                         |
++------------------------v-------------------------+
+|             Adaptadores de Salida                |
+|        (R2DBC Repository - PostgreSQL)           |
++--------------------------------------------------+
 ```
 
 ---
 
-## 🚀 Instalación
+## Instalación
 
 ### Prerrequisitos
 
@@ -170,7 +170,7 @@ http://localhost:8087/swagger-ui.html
 
 ---
 
-## 🔄 Pipeline Jenkins
+## Pipeline Jenkins
 
 ### Stages del Pipeline
 
@@ -178,20 +178,27 @@ http://localhost:8087/swagger-ui.html
 2. **Build**: Compila el código fuente (`mvn clean compile`)
 3. **Unit Tests**: Ejecuta tests unitarios y genera reporte JaCoCo
 4. **SonarQube Analysis**: Analiza calidad del código
-5. **Quality Gate**: Verifica que el código cumpla los estándares
-6. **Package**: Genera el JAR ejecutable
-7. **JMeter Load Tests**: Ejecuta 3 escenarios de carga (verde, amarillo, rojo)
-8. **Selenium Functional Tests**: Ejecuta pruebas funcionales
+5. **JMeter Load Tests**: Ejecuta 3 escenarios de carga (verde, amarillo, rojo)
+6. **Selenium Functional Tests**: Ejecuta pruebas funcionales
+7. **Slack Notification**: Notifica el resultado del build
 
 ### Configuración en Jenkins
 
-```groovy
-// Ver archivo: Jenkinsfile
-```
+Ver archivo: `Jenkinsfile`
+
+**Configuración necesaria:**
+
+- **Tools**: Maven-3.9.9, JDK-17
+- **Credentials**: 
+  - `sonar-token` (SonarCloud authentication)
+  - `slack-token` (Slack integration)
+- **SonarQube Server**: 
+  - Name: SonarCloud
+  - URL: https://sonarcloud.io
 
 ---
 
-## 🧪 Pruebas
+## Pruebas
 
 ### Tests Unitarios
 
@@ -209,23 +216,30 @@ Reporte disponible en: `target/site/jacoco/index.html`
 
 ### Pruebas de Carga (JMeter)
 
-**Escenario Verde** (10 usuarios, 5 segundos):
+**Escenario Verde** (10 usuarios, condiciones óptimas):
 ```bash
-jmeter -n -t jmeter/scenario-green.jmx -l target/green-results.jtl
+jmeter -n -t jmeter/scenario-green.jmx -l results/green-results.jtl -e -o results/green-report
 ```
 
-**Escenario Amarillo** (50 usuarios, 10 segundos):
+**Escenario Amarillo** (50 usuarios, carga media):
 ```bash
-jmeter -n -t jmeter/scenario-yellow.jmx -l target/yellow-results.jtl
+jmeter -n -t jmeter/scenario-yellow.jmx -l results/yellow-results.jtl -e -o results/yellow-report
 ```
 
-**Escenario Rojo** (100 usuarios, 20 segundos):
+**Escenario Rojo** (100+ usuarios, prueba de estrés):
 ```bash
-jmeter -n -t jmeter/scenario-red.jmx -l target/red-results.jtl
+jmeter -n -t jmeter/scenario-red.jmx -l results/red-results.jtl -e -o results/red-report
 ```
 
 ### Pruebas Funcionales (Selenium)
 
+**Instalar dependencias:**
+```bash
+cd selenium
+pip install -r requirements.txt
+```
+
+**Ejecutar tests:**
 ```bash
 python selenium/test1-login.py
 python selenium/test2-request.py
@@ -233,18 +247,20 @@ python selenium/test2-request.py
 
 ---
 
-## 🔗 Integraciones
+## Integraciones
 
 ### SonarQube / SonarCloud
 
 - **Organization**: dubansalas
 - **Project Key**: DubanSalas_fideinexus-jenkins-demo
 - **URL**: https://sonarcloud.io
+- **Dashboard**: [Ver análisis](https://sonarcloud.io/project/overview?id=DubanSalas_fideinexus-jenkins-demo)
 
 ### Slack
 
-- **Canal**: #jenkins-notifications
-- **Webhook**: Configurado en Jenkins Credentials
+- **Workspace**: jenkinsfideinexus
+- **Canal**: #nuevo-canal
+- **Notificaciones**: Success, Failure, Unstable
 
 ### Métricas de Calidad
 
@@ -253,18 +269,19 @@ python selenium/test2-request.py
 - **Code Smells**: 0 (objetivo)
 - **Bugs**: 0
 - **Vulnerabilities**: 0
+- **Security Hotspots**: 0
 
 ---
 
-## 📊 Resultados Esperados
+## Resultados Esperados
 
 ### Escenarios JMeter
 
-| Escenario | Usuarios | Duración | Throughput Esperado | Error Rate |
-|-----------|----------|----------|---------------------|------------|
-| Verde     | 10       | 5s       | 50 req/s            | < 1%       |
-| Amarillo  | 50       | 10s      | 100 req/s           | < 5%       |
-| Rojo      | 100      | 20s      | 150 req/s           | < 10%      |
+| Escenario | Usuarios | Ramp-up | Duración | Throughput Esperado | Error Rate |
+|-----------|----------|---------|----------|---------------------|------------|
+| Verde     | 10       | 5s      | 30s      | ~20 req/s           | < 1%       |
+| Amarillo  | 50       | 10s     | 60s      | ~50 req/s           | < 5%       |
+| Rojo      | 100+     | 15s     | 90s      | Variable            | > 5%       |
 
 ### Tests Funcionales
 
@@ -275,7 +292,85 @@ python selenium/test2-request.py
 
 ---
 
-## 👥 Autores
+## Ejecución del Pipeline
+
+### Manualmente desde Jenkins
+
+1. Abrir Jenkins: `http://localhost:8080`
+2. Ir al proyecto: `fideinexus-jenkins-demo`
+3. Click en **"Build Now"**
+4. Monitorear progreso en **"Build History"**
+5. Ver logs en **"Console Output"**
+
+### Automáticamente con Webhooks
+
+Configurar webhook en GitHub para trigger automático en cada push:
+
+```
+Payload URL: http://your-jenkins-url/github-webhook/
+Content type: application/json
+Events: Just the push event
+```
+
+---
+
+## Estructura de Notificación Slack
+
+### Mensaje de Éxito
+
+```
+*BUILD SUCCESS*
+Project: FideiNexus Jenkins Demo
+Build: #2
+Status: SUCCESS
+Duration: 5 min 32 sec
+
+- Build completed
+- Tests passed
+- SonarQube analysis done
+- JMeter tests executed
+- Selenium tests passed
+
+View Build: http://localhost:8080/job/fideinexus-jenkins-demo/2/
+```
+
+### Mensaje de Fallo
+
+```
+*BUILD FAILED*
+Project: FideiNexus Jenkins Demo
+Build: #3
+Status: FAILURE
+Duration: 2 min 15 sec
+
+View Console Output: http://localhost:8080/job/fideinexus-jenkins-demo/3/console
+```
+
+---
+
+## Troubleshooting
+
+### Error: "jmeter: command not found"
+
+Agregar JMeter al PATH:
+```bash
+export PATH=$PATH:/path/to/jmeter/bin
+```
+
+### Error: Selenium WebDriver not found
+
+Instalar Chrome WebDriver:
+```bash
+pip install webdriver-manager
+```
+
+### Error: SonarQube authentication failed
+
+Verificar el token en Jenkins Credentials y en SonarCloud.
+
+---
+
+## Autores
 
 **Duban Alexander Salas Napán**
 - GitHub: [@DubanSalas](https://github.com/DubanSalas)
@@ -287,16 +382,26 @@ python selenium/test2-request.py
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto es de uso académico. Desarrollado como parte de la asignatura de Arquitectura de Software.
 
 ---
 
-## 🎥 Video Demostrativo
+## Video Demostrativo
 
 [Enlace al video]() - Explicación completa del pipeline (8-10 minutos)
 
 ---
 
-**⭐ Si te gustó este proyecto, dale una estrella en GitHub!**
+## Enlaces Útiles
+
+- [Jenkins Documentation](https://www.jenkins.io/doc/)
+- [SonarQube Documentation](https://docs.sonarqube.org/)
+- [JMeter User Manual](https://jmeter.apache.org/usermanual/index.html)
+- [Selenium Documentation](https://www.selenium.dev/documentation/)
+- [Spring Boot Reference](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
+
+---
+
+**Si este proyecto te fue útil, considera darle una estrella en GitHub!**
