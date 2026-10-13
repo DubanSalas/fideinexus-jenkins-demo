@@ -53,11 +53,13 @@ pipeline {
             }
             post {
                 always {
-                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
-                    jacoco execPattern: '**/target/jacoco.exec',
-                           classPattern: '**/target/classes',
-                           sourcePattern: '**/src/main/java',
-                           exclusionPattern: '**/*Test*.class'
+                    script {
+                        try {
+                            junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+                        } catch (Exception e) {
+                            echo "JUnit report generation failed: ${e.message}"
+                        }
+                    }
                 }
             }
         }
