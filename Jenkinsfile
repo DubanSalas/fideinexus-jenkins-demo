@@ -67,16 +67,25 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
-                withSonarQubeEnv('SonarCloud') {
-                    bat """
-                        mvn sonar:sonar ^
-                        -Dsonar.projectKey=DubanSalas_fideinexus-jenkins-demo ^
-                        -Dsonar.organization=dubansalas ^
-                        -Dsonar.host.url=https://sonarcloud.io ^
-                        -Dsonar.token=${SONAR_TOKEN}
-                    """
+                script {
+                    try {
+                        withSonarQubeEnv('SonarCloud') {
+                            bat """
+                                mvn sonar:sonar ^
+                                -Dsonar.projectKey=DubanSalas_fideinexus-jenkins-demo ^
+                                -Dsonar.organization=dubansalas ^
+                                -Dsonar.host.url=https://sonarcloud.io ^
+                                -Dsonar.token=${SONAR_TOKEN}
+                            """
+                        }
+                        echo 'SonarQube analysis completed'
+                    } catch (Exception e) {
+                        echo "SonarQube analysis failed: ${e.message}"
+                        echo "Note: SonarCloud requires Java 21 or newer"
+                        echo "Continuing pipeline execution..."
+                        currentBuild.result = 'UNSTABLE'
+                    }
                 }
-                echo 'SonarQube analysis completed'
             }
         }
         
